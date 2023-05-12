@@ -1,15 +1,53 @@
 #include "UART.h"
 
 void UART2_Init(void) {
-	// TODO
+	//Enable clock for UART2
+	RCC->APB1ENR1 &= ~(RCC_APB1ENR1_USART2EN);
+	RCC->APB1ENR1 |= RCC_APB1ENR1_USART2EN;
+	
+	//Choose System clock as clock source for USART2
+	RCC->CCIPR &= ~RCC_CCIPR_USART2SEL;
+	RCC->CCIPR |= RCC_CCIPR_USART2SEL_0;
 }
 
 void UART2_GPIO_Init(void) {
-	// TODO
+	//Enable GPIO clock a
+	RCC->AHB2ENR &= ~(RCC_AHB2ENR_GPIOAEN);
+	RCC->AHB2ENR |= (RCC_AHB2ENR_GPIOAEN);
+	
+	//Set Alternative function mode
+	GPIOA->MODER &= ~(GPIO_MODER_MODE2 | GPIO_MODER_MODE3);
+	GPIOA->MODER |= (GPIO_MODER_MODE2_1 | GPIO_MODER_MODE3_1);
+	
+	GPIOA->AFR[0] &= ~(GPIO_AFRL_AFSEL2 | GPIO_AFRL_AFSEL3);
+	GPIOA->AFR[0] |= (GPIO_AFRL_AFSEL2_0 |GPIO_AFRL_AFSEL2_1 |GPIO_AFRL_AFSEL2_2 | GPIO_AFRL_AFSEL3_0 | GPIO_AFRL_AFSEL3_1| GPIO_AFRL_AFSEL3_2);
+	
+	//Set pins 2/3 to very high speed output
+	GPIOA->OSPEEDR &= ~(GPIO_OSPEEDR_OSPEED2 | GPIO_OSPEEDR_OSPEED3);
+	GPIOA->OSPEEDR |= (GPIO_OSPEEDR_OSPEED2 | GPIO_OSPEEDR_OSPEED3);
+	
+	
+	//Set pins 2/3 to push pull
+	GPIOA->OTYPER &= ~(GPIO_OTYPER_OT2 | GPIO_OTYPER_OT3);
+	
+	//Set pins 2/3 to pull-up
+	GPIOA->PUPDR &= ~(GPIO_PUPDR_PUPD2 | GPIO_PUPDR_PUPD3);
+	GPIOA->PUPDR |= (GPIO_PUPDR_PUPD2_0 | GPIO_PUPDR_PUPD3_0);
+	
+	
 }
 
 void USART_Init(USART_TypeDef* USARTx) {
-	// TODO
+	// Disable USART of choice
+	USARTx->CR1 = 0;
+	USARTx->CR2 = 0;
+
+	//[TODO] Configure baud rate
+	USARTx->BRR = 8333;
+	//Enable transmitter and reciever
+	USARTx->CR1 |= USART_CR1_RE | USART_CR1_TE;
+	//Re-enable USART
+	USARTx->CR1 |= USART_CR1_UE;
 }
 
 uint8_t USART_Read (USART_TypeDef * USARTx) {

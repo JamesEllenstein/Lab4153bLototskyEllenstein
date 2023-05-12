@@ -19,15 +19,15 @@ int main(void){
 	double x,y,z;
 	
 	System_Clock_Init();   // System Clock = 80 MHz
-	SysTick_Init();
+
 	UART2_GPIO_Init();
 	UART2_Init();
 	USART_Init(USART2);
-	
 	SPI1_GPIO_Init();
 	SPI1_Init();
+	SysTick_Init();
 	initAcc();
-	
+	printf("Tester2");
 	while(1) {
 		readValues(&x, &y, &z);
 		printf("Acceleration: %.2f, %.2f, %.2f\r\n", x, y, z);

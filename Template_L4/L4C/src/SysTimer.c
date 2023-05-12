@@ -16,7 +16,7 @@ void SysTick_Init(void){
 	SysTick->CTRL = 0;										// Disable SysTick IRQ and SysTick Counter
 	
 	// SysTick Reload Value Register
-	SysTick->LOAD = 0;    // [TODO] 1ms, 80MHz clock
+	SysTick->LOAD = 9999;    // [Done] 1ms, 80Mhz
 	
 	// SysTick Current Value Register
 	SysTick->VAL = 0;
@@ -48,5 +48,6 @@ void SysTick_Handler(void){
 // Delay in ms
 //******************************************************************************************
 void delay (uint32_t T){
-	// [TODO]
+	uint32_t delay = msTicks + T;
+	while (msTicks < delay) {}
 }

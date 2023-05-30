@@ -410,16 +410,6 @@
               <FilePath>.\src\SysClock.h</FilePath>
             </File>
             <File>
-              <FileName>LED.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\LED.c</FilePath>
-            </File>
-            <File>
-              <FileName>LED.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\src\LED.h</FilePath>
-            </File>
-            <File>
               <FileName>SPI.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\src\SPI.c</FilePath>

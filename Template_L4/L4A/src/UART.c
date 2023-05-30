@@ -4,6 +4,10 @@ void UART1_Init(void) {
 	//Enable clock for UART1
 	RCC->APB2ENR &= ~(RCC_APB2ENR_USART1EN);
 	RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
+
+	//Choose System clock as clock source for USART1
+	RCC->CCIPR &= ~RCC_CCIPR_USART1SEL;
+	RCC->CCIPR |= RCC_CCIPR_USART1SEL_0;
 }
 
 void UART2_Init(void) {
@@ -17,19 +21,27 @@ void UART2_Init(void) {
 }
 
 void UART1_GPIO_Init(void) {
+	//Enable GPIO clock b
 	RCC->AHB2ENR &= ~(RCC_AHB2ENR_GPIOBEN);
 	RCC->AHB2ENR |= (RCC_AHB2ENR_GPIOBEN);
+
+	//Set Alternative function mode
+	GPIOB->MODER &= ~(GPIO_MODER_MODE6 | GPIO_MODER_MODE7);
+	GPIOB->MODER |= (GPIO_MODER_MODE6_1 | GPIO_MODER_MODE7_1);
+
+	GPIOB->AFR[0] &= ~(GPIO_AFRL_AFSEL6 | GPIO_AFRL_AFSEL7);
+	GPIOB->AFR[0] |= (GPIO_AFRL_AFSEL6_0 | GPIO_AFRL_AFSEL6_1 | GPIO_AFRL_AFSEL6_2 | GPIO_AFRL_AFSEL7_0 | GPIO_AFRL_AFSEL7_1| GPIO_AFRL_AFSEL7_2);
 	
 	//Set pins 6/7 to very high speed output
-	GPIOB->OSPEEDR &= ~(15<<12);
-	GPIOB->OSPEEDR |= (15<<12);
+	GPIOB->OSPEEDR &= ~(GPIO_OSPEEDR_OSPEED6 | GPIO_OSPEEDR_OSPEED7);
+	GPIOB->OSPEEDR |= (GPIO_OSPEEDR_OSPEED6 | GPIO_OSPEEDR_OSPEED7);
 	
 	//Set pins 6/7 to push pull
-	GPIOB->OTYPER &= ~(3<<6);
+	GPIOB->OTYPER &= ~(GPIO_OTYPER_OT6 | GPIO_OTYPER_OT7);
 	
 	//Set pins 6/7 to pull-up
-	GPIOB->PUPDR &= ~(15<<12);
-	GPIOB->PUPDR |= (5<<12);
+	GPIOB->PUPDR &= ~(GPIO_PUPDR_PUPD6 | GPIO_PUPDR_PUPD7);
+	GPIOB->PUPDR |= (GPIO_PUPDR_PUPD6_0 | GPIO_PUPDR_PUPD7_0);
 }
 
 void UART2_GPIO_Init(void) {
@@ -42,7 +54,7 @@ void UART2_GPIO_Init(void) {
 	GPIOA->MODER |= (GPIO_MODER_MODE2_1 | GPIO_MODER_MODE3_1);
 	
 	GPIOA->AFR[0] &= ~(GPIO_AFRL_AFSEL2 | GPIO_AFRL_AFSEL3);
-	GPIOA->AFR[0] |= (GPIO_AFRL_AFSEL2_0 |GPIO_AFRL_AFSEL2_1 |GPIO_AFRL_AFSEL2_2 | GPIO_AFRL_AFSEL3_0 | GPIO_AFRL_AFSEL3_1| GPIO_AFRL_AFSEL3_2);
+	GPIOA->AFR[0] |= (GPIO_AFRL_AFSEL2_0 | GPIO_AFRL_AFSEL2_1 | GPIO_AFRL_AFSEL2_2 | GPIO_AFRL_AFSEL3_0 | GPIO_AFRL_AFSEL3_1| GPIO_AFRL_AFSEL3_2);
 	
 	//Set pins 2/3 to very high speed output
 	GPIOA->OSPEEDR &= ~(GPIO_OSPEEDR_OSPEED2 | GPIO_OSPEEDR_OSPEED3);
@@ -89,7 +101,8 @@ void USART_Write(USART_TypeDef * USARTx, uint8_t *buffer, uint32_t nBytes) {
 		while (!(USARTx->ISR & USART_ISR_TXE));   	// wait until TXE (TX empty) bit is set
 		// Writing USART_DR automatically clears the TXE flag 	
 		USARTx->TDR = buffer[i] & 0xFF;
-		USART_Delay(300);
+		// USART_Delay(300); Part A
+		USART_Delay(40000)
 	}
 	while (!(USARTx->ISR & USART_ISR_TC));   		  // wait until TC bit is set
 	USARTx->ISR &= ~USART_ISR_TC;

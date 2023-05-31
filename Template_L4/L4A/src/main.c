@@ -37,16 +37,19 @@ int main(void) {
 	Green_LED_Toggle();
 	
 	// Initialize UART -- change the argument depending on the part you are working on
-	Init_USARTx(2);
+	Init_USARTx(1);
 	int led = 0;
 	char rxByte;
 	while(1) {
 		// [TODO]
 		printf("Please give an input(y/n):");
+		Init_USARTx(1);
 		scanf("%c",&rxByte);
+		Init_USARTx(1);
 		if (rxByte == 'n' || rxByte == 'N') {
 			if (led == 1) {
 			printf("LED turned off \n");
+				Init_USARTx(1);
 			}
 			Green_LED_Off();
 			led = 0;
@@ -54,11 +57,13 @@ int main(void) {
 		} else if (rxByte == 'y' || rxByte == 'Y') {
 			if (led == 0) {
 				printf("LED turned on \n");
+				Init_USARTx(1);
 			}
 			Green_LED_On();
 			led = 1;
 		} else {
 			printf("Please give a valid input \n");
+			Init_USARTx(1);
 		}
 	}
 }
